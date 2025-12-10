@@ -2,5 +2,6 @@ fastapi
 uvicorn
 numpy
 Pillow
-face_recognition
 python-multipart
+insightface
+onnxruntime
