@@ -3,4 +3,4 @@ uvicorn==0.38.0
 numpy==1.26.4
 insightface==0.7.3
 onnxruntime==1.17.3
-python-multipart==0.0.9
+pillow==9.5.0
