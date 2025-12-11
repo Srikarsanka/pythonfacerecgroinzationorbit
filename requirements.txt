@@ -1,8 +1,8 @@
-fastapi
-uvicorn
+fastapi==0.124.2
+uvicorn==0.38.0
 numpy==1.26.4
-Pillow
-python-multipart
+pillow==10.2.0
+python-multipart==0.0.20
 insightface==0.7.3
 onnxruntime==1.17.3
 opencv-python-headless==4.7.0.72
