@@ -11,4 +11,4 @@ venv\Scripts\activate
 
 If your file is main.py:
 
-uvicorn main:app --reload
+uvicorn app:app --reload
