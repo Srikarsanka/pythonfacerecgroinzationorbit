@@ -1,5 +1,19 @@
 # app.py (Optimized for Azure App Service)
 import os
+import sys
+
+# ====== FIX FOR AZURE GLIBCXX_3.4.32 ERROR ======
+# Preload libstdc++ from onnxruntime before insightface
+# This provides the missing GLIBCXX_3.4.32 symbols required by face3d cython
+try:
+    import ctypes
+    sys.setdlopenflags(os.RTLD_GLOBAL | os.RTLD_NOW)
+    import onnxruntime
+    sys.setdlopenflags(os.RTLD_LOCAL | os.RTLD_NOW)
+except Exception:
+    pass
+# ================================================
+
 import contextlib
 
 # 1. Set persistent cache path BEFORE importing InsightFace
