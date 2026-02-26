@@ -26,7 +26,15 @@ os.environ["INSIGHTFACE_HOME"] = INSIGHTFACE_DIR
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import numpy as np
-from insightface.app import FaceAnalysis
+
+# Make insightface optional so the backend can start even if face recognition fails
+try:
+    from insightface.app import FaceAnalysis
+    HAS_INSIGHTFACE = True
+except ImportError as e:
+    HAS_INSIGHTFACE = False
+    print(f"Warning: InsightFace not available. Face analysis endpoint will be disabled. Error: {e}")
+
 from PIL import Image
 import io
 import logging
@@ -46,19 +54,22 @@ async def lifespan(app: FastAPI):
     """
     global _face_analyzer
     try:
-        logger.info(f"🚀 Starting up... stored models at {INSIGHTFACE_DIR}")
-        
-        # Initialize InsightFace model
-        # allowed_modules=['detection', 'recognition'] loads minimal required models
-        model = FaceAnalysis(name="buffalo_l", allowed_modules=["detection", "recognition"])
-        
-        # ctx_id=-1 forces CPU (safer for generic Azure App Service plans)
-        # det_size=(640, 640) ensures consistent performance
-        model.prepare(ctx_id=-1, det_size=(640, 640))
-        
-        _face_analyzer = model
-        logger.info("✅ Face Analysis model loaded successfully")
-        
+        if HAS_INSIGHTFACE:
+            logger.info(f"🚀 Starting up... stored models at {INSIGHTFACE_DIR}")
+            
+            # Initialize InsightFace model
+            # allowed_modules=['detection', 'recognition'] loads minimal required models
+            model = FaceAnalysis(name="buffalo_l", allowed_modules=["detection", "recognition"])
+            
+            # ctx_id=-1 forces CPU (safer for generic Azure App Service plans)
+            # det_size=(640, 640) ensures consistent performance
+            model.prepare(ctx_id=-1, det_size=(640, 640))
+            
+            _face_analyzer = model
+            logger.info("✅ Face Analysis model loaded successfully")
+        else:
+            logger.warning("⚠️ Face Analysis model NOT loaded because insightface is missing")
+            
     except Exception as e:
         logger.error(f"❌ Failed to load AI models: {e}")
         # We don't raise here to allow the app to start, but /encode will fail gracefully
