@@ -2,7 +2,7 @@ fastapi==0.115.0
 uvicorn==0.30.6
 numpy==1.26.4
 pillow==9.5.0
-onnxruntime==1.16.3
-insightface==0.7.2
+onnxruntime==1.14.1
+insightface==0.6.2
 openai
 python-multipart==0.0.9
